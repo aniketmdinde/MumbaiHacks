@@ -1,4 +1,5 @@
-from flask import Blueprint, redirect, url_for, session
+from flask import Blueprint, redirect, url_for, session, render_template
+
 
 views = Blueprint('views', __name__)
 
@@ -7,4 +8,4 @@ def home():
     if 'user_id' not in session:
         return redirect(url_for('auth.signup'))
     
-    return "<p>Welcome</p>"
+    return render_template("chat.html")
