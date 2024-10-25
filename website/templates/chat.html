@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/chat.css" />
+    <link rel="stylesheet" href="../static/themes/default.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidenav">
+        <div class="top-sidenav">
+          <div class="sidenav-logo">logo</div>
+          <img class="sidenav-icon" src="" alt="" />
+        </div>
+      </div>
+      <div class="main-container">
+        <nav class="navbar">
+          <div class="nav-logo">logo</div>
+          <div class="profile">
+            <img class="profile-pic" src="" alt="" />
+          </div>
+        </nav>
+        <div class="chat-box">
+          <div class="chat-scroll">
+            <div class="chat-body" id="chatBody">
+              <!-- Messages will be appended here -->
+            </div>
+          </div>
+          <div class="chat-bottom">
+            <!-- <form action="/" method="post" class="query-form"> -->
+            <input
+              type="text"
+              id="userInput"
+              class="text-query"
+              placeholder="Message"
+              oninput="toggleButton()"
+            />
+            <div class="send-voice-btn">
+              <img
+                class="send-voice-icon init-btn"
+                src="../static/assets/voice.svg"
+                alt=""
+                id="sendVoiceButton"
+                onclick="sendMessage()"
+              />
+            </div>
+            <!-- </form> -->
+          </div>
+          <div class="voice-popup" style="display: none;">
+            <button id="start-btn">Start Transcribing</button>
+            <button id="stop-btn" disabled>Stop Transcribing</button>
+            <div
+              id="output"
+              style="white-space: pre-wrap; margin-top: 20px"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const chatBody = document.getElementById("chatBody");
+      const userInput = document.getElementById("userInput");
+      const sendVoiceIcon = document.getElementById("sendVoiceButton");
+      let isTyping = false;
+
+      function toggleButton() {
+        // Change button from voice to send based on text input
+        if (userInput.value.trim() !== "") {
+          sendVoiceButton.src = "../static/assets/send.svg";
+          isTyping = true;
+        } else {
+          sendVoiceButton.src = "../static/assets/voice.svg";
+          isTyping = false;
+        }
+      }
+
+      function addMessage(message, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add(
+          "message",
+          sender === "user" ? "user-message" : "bot-message"
+        );
+        messageDiv.textContent = message;
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom
+      }
+
+      function sendMessage() {
+        const userMessage = userInput.value.trim();
+        if (!userMessage && !isTyping) {
+          // If no text is entered, start voice input
+          startVoiceInput();
+          return;
+        }
+
+        if (userMessage === "") return;
+
+        // Add user message to chat
+        addMessage(userMessage, "user");
+
+        // Clear the input and reset the button
+        userInput.value = "";
+        toggleButton();
+
+        // Simulate sending message to backend and receiving a response
+        getBotResponse(userMessage).then((botResponse) =>
+          addMessage(botResponse, "bot")
+        );
+      }
+
+      function getBotResponse(userMessage) {
+        // Replace with backend call using fetch/axios in real implementation
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(`Bot response to "${userMessage}"`);
+          }, 500); // Mocking a delay for response
+        });
+      }
+
+      function startVoiceInput() {
+        // Placeholder for voice input functionality
+        const voicePopup = document.querySelector('.voice-popup')
+        voicePopup.style.display = "block"
+        // initializeSpeechRecognition()
+      }
+
+      // Send message on pressing Enter
+      userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      // voice recognition ----------------------
+
+
+
+      const output = document.getElementById('output');
+      const startBtn = document.getElementById('start-btn');
+      const stopBtn = document.getElementById('stop-btn');
+      const voiceSelect = document.getElementById('voice-select');
+      const textQuery = document.getElementById('userInput')
+      const voicePopup = document.querySelector('.voice-popup')
+
+      // Check for SpeechRecognition API support
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechSynthesis = window.speechSynthesis;
+
+      if (!SpeechRecognition) {
+          output.innerText = "Your browser does not support the Web Speech API.";
+          startBtn.disabled = true;
+          stopBtn.disabled = true;
+      } else {
+          const recognition = new SpeechRecognition();
+          recognition.lang = 'en-IN';
+          recognition.interimResults = true;  // Allow interim results
+          recognition.continuous = true;       // Keep recognizing
+
+          let transcription = '';  // Variable to store the full transcription
+
+          // Populate voice options
+          function populateVoiceList() {
+              const voices = SpeechSynthesis.getVoices();
+              voiceSelect.innerHTML = '';
+              voices.forEach((voice) => {
+                  const option = document.createElement('option');
+                  option.value = voice.name;
+                  option.textContent = `${voice.name} (${voice.lang})`;
+                  voiceSelect.appendChild(option);
+              });
+          }
+
+          // Event listener for when the voice list is loaded
+          speechSynthesis.onvoiceschanged = populateVoiceList;
+
+          recognition.onstart = () => {
+              output.innerText = "Listening...";
+              startBtn.disabled = true;
+              stopBtn.disabled = false;
+              transcription = ''; // Clear previous transcription
+          };
+
+          recognition.onresult = (event) => {
+              // Get the latest result
+              const latestResult = event.results[event.results.length - 1];
+              // Check if the result is final
+              if (latestResult.isFinal) {
+                  transcription += latestResult[0].transcript + ' '; // Append new final transcript
+              }
+              textQuery.value = transcription; // Update output with the final transcription
+              toggleButton()
+              
+          };
+
+          recognition.onerror = (event) => {
+              output.innerText = `Error occurred in recognition: ${event.error}`;
+          };
+
+          recognition.onend = () => {
+              output.innerText += "\nStopped listening.";
+              startBtn.disabled = false;
+              stopBtn.disabled = true;
+
+              // Speak the full transcription when recognition ends
+              const utterance = new SpeechSynthesisUtterance(transcription);
+              const selectedVoice = voiceSelect.value;
+              const voices = SpeechSynthesis.getVoices();
+              const voice = voices.find(v => v.name === selectedVoice);
+
+              // Set the selected voice for the utterance
+              if (voice) {
+                  utterance.voice = voice;
+              }
+              SpeechSynthesis.speak(utterance);
+          };
+
+          startBtn.onclick = () => {
+              recognition.start();
+          };
+
+          stopBtn.onclick = () => {
+              recognition.stop();
+              voicePopup.style.display = "none"
+          };
+      }
+    </script>
+  </body>
+</html>
