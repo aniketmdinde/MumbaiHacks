@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+    <form action="{{ url_for('auth.signup') }}" method="POST">
+        <div class="email">
+            <label for="email">Email: </label>
+            <input type="email" name="email" id="email">
+        </div>
+        <div class="password">
+            <label for="password">Password: </label>
+            <input type="password" name="password" id="password">
+        </div>
+        <div class="password-conf">
+            <label for="password-conf">Confirm Password: </label>
+            <input type="password" name="password-conf" id="password-conf">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
