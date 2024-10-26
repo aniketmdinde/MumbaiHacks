@@ -29,13 +29,14 @@
             </div>
           </div>
           <div class="chat-bottom">
-            <!-- <form action="/" method="post" class="query-form"> -->
+            <form action="/ask-question" method="post" class="query-form">
             <input
               type="text"
               id="userInput"
               class="text-query"
               placeholder="Message"
               oninput="toggleButton()"
+              name="question"
             />
             <div class="send-voice-btn">
               <img
@@ -46,7 +47,7 @@
                 onclick="sendMessage()"
               />
             </div>
-            <!-- </form> -->
+            </form>
           </div>
           <div class="voice-popup" style="display: none;">
             <div
