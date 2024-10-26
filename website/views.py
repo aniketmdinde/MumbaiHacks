@@ -9,3 +9,7 @@ def home():
         return redirect(url_for('auth.signup'))
     
     return render_template("chat.html")
+
+@views.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
