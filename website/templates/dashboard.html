@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard</title>
+</head>
+<body>
+    <nav>
+        <ul id="navbar">
+            <li><a href="#charts">Charts</a></li>
+            <li><a href="#transactions">Transactions</a></li>
+            <li><a href="#savings">Savings</a></li>
+            <li><a href="#settings">Settings</a></li>
+        </ul>
+    </nav>
+  
+    <section id="charts">
+        <div class="container">
+            <div class="expenses">
+                <canvas id="balanceChart"></canvas>
+            </div>
+            <div class="categories">
+                <canvas id="expensesChart"></canvas>
+            </div>
+            <div class="savings">
+                <canvas id="savingsChart"></canvas>
+            </div>
+            <div class="future-expenses">
+                <canvas id="futurePaymentsChart"></canvas>
+            </div>
+        </div>
+    </section>
+  
+    <section id="transactions"></section>
+    <section id="savings"></section>
+    <section id="settings"></section>
+  
+    <script src="../static/dashboard.js"></script>
+</body>
+</html>
