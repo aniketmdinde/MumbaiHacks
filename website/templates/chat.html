@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Artha.ai</title>
     <link rel="stylesheet" href="../static/chat.css" />
-    <link rel="stylesheet" href="../static/themes/default.css" />
+    <link rel="stylesheet" href="../static/themes/light.css" />
   </head>
   <body>
     <div class="container">
       <div class="sidenav">
         <div class="top-sidenav">
-          <div class="sidenav-logo">logo</div>
-          <img class="sidenav-icon" src="" alt="" />
+          <div class="sidenav-logo">Artha.ai</div>
+          <img class="sidenav-icon" src="../static/assets/sidenav.svg" alt="" />
         </div>
       </div>
       <div class="main-container">
         <nav class="navbar">
-          <div class="nav-logo">logo</div>
+          <p class="nav-logo">Artha.ai</p>
           <div class="profile">
             <img class="profile-pic" src="" alt="" />
           </div>
@@ -49,12 +49,16 @@
             <!-- </form> -->
           </div>
           <div class="voice-popup" style="display: none;">
-            <button id="start-btn">Start Transcribing</button>
-            <button id="stop-btn" disabled>Stop Transcribing</button>
             <div
               id="output"
-              style="white-space: pre-wrap; margin-top: 20px"
+              style="font-size:1.5em; white-space: pre-wrap; margin-top: 20px; text-align:center"
             ></div>
+            <!-- <img src="../static/assets/voice_recording.png" alt=""> -->
+            <div class="voice-btns">
+              <!-- <button id="start-btn">Start Recording</button>
+              <button id="stop-btn" disabled>Stop Recording</button> -->
+              <button id="toggle-btn">Start Transcribing</button>
+            </div>
           </div>
         </div>
       </div>
@@ -139,8 +143,9 @@
 
 
       const output = document.getElementById('output');
-      const startBtn = document.getElementById('start-btn');
-      const stopBtn = document.getElementById('stop-btn');
+      // const startBtn = document.getElementById('start-btn');
+      // const stopBtn = document.getElementById('stop-btn');
+      const toggleBtn = document.getElementById('toggle-btn');
       const voiceSelect = document.getElementById('voice-select');
       const textQuery = document.getElementById('userInput')
       const voicePopup = document.querySelector('.voice-popup')
@@ -151,8 +156,10 @@
 
       if (!SpeechRecognition) {
           output.innerText = "Your browser does not support the Web Speech API.";
-          startBtn.disabled = true;
-          stopBtn.disabled = true;
+          // startBtn.disabled = true;
+          // stopBtn.disabled = true;
+          toggleBtn.disabled = true;
+
       } else {
           const recognition = new SpeechRecognition();
           recognition.lang = 'en-IN';
@@ -160,6 +167,7 @@
           recognition.continuous = true;       // Keep recognizing
 
           let transcription = '';  // Variable to store the full transcription
+          let isListening = false;
 
           // Populate voice options
           function populateVoiceList() {
@@ -178,9 +186,11 @@
 
           recognition.onstart = () => {
               output.innerText = "Listening...";
-              startBtn.disabled = true;
-              stopBtn.disabled = false;
+              // startBtn.disabled = true;
+              // stopBtn.disabled = false;
+              toggleBtn.innerText = "Stop Transcribing";
               transcription = ''; // Clear previous transcription
+              isListening = true;
           };
 
           recognition.onresult = (event) => {
@@ -201,8 +211,10 @@
 
           recognition.onend = () => {
               output.innerText += "\nStopped listening.";
-              startBtn.disabled = false;
-              stopBtn.disabled = true;
+              toggleBtn.innerText = "Start Transcribing";
+              isListening = false;
+              // startBtn.disabled = false;
+              // stopBtn.disabled = true;
 
               // Speak the full transcription when recognition ends
               const utterance = new SpeechSynthesisUtterance(transcription);
@@ -217,15 +229,46 @@
               SpeechSynthesis.speak(utterance);
           };
 
-          startBtn.onclick = () => {
-              recognition.start();
-          };
+          // startBtn.onclick = () => {
+          //     recognition.start();
+          // };
 
-          stopBtn.onclick = () => {
+          // stopBtn.onclick = () => {
+          //     recognition.stop();
+          // };
+          toggleBtn.onclick = () => {
+            if (isListening) {
               recognition.stop();
               voicePopup.style.display = "none"
-          };
+            } else {
+                    recognition.start();
+                }
+            };
       }
+
+
+
+
+      // button clicks
+      let isSidenavOpen = true
+      const sideNavIcon = document.querySelector('.sidenav-icon')
+      sideNavIcon.addEventListener('click',()=>{
+        const sidenav = document.querySelector('.sidenav')
+        const mainContainer = document.querySelector('.main-container')
+        const navLogo = document.querySelector('.nav-logo')
+        if (isSidenavOpen===true){
+          sidenav.style.left = "-15vw"
+          mainContainer.style.width = "95vw"
+          navLogo.style.height = "auto"
+          isSidenavOpen = false
+        }
+        else{
+          sidenav.style.left = 0
+          mainContainer.style.width = "80vw"
+          navLogo.style.height = "0px"
+          isSidenavOpen = true
+        }
+      })
     </script>
   </body>
 </html>

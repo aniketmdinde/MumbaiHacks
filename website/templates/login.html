@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="../static/login.css">
-    <link rel="stylesheet" href="../static/themes/default.css" id="theme-css" />
+    <link rel="stylesheet" href="../static/themes/light.css" id="theme-css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
@@ -13,8 +13,9 @@
 </head>
 <body>
     <div class="container">
+        <img src="../static/assets/mobile.jpg" alt="">
         <div class="form-div">
-            <h2>Log in to Prepair</h2>
+            <h2>Login to Artha.ai</h2>
             <form action="{{ url_for('auth.login') }}" method="POST">
                 <input type="email" name="email" placeholder="Email" id="email" required>
                 <input type="password" name="password" placeholder="Password" id="password" required>
